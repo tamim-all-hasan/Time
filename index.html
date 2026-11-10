@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10111a">
+  <title>Chronos — Event Countdown</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#"><span class="brand-mark">◷</span><span>chronos<small>EVENT COUNTDOWN</small></span></a>
+      <nav>
+        <button class="nav-link active" data-view="dashboard"><span>▦</span> Dashboard</button>
+        <button class="nav-link" data-view="timeline"><span>◉</span> Timeline</button>
+        <button class="nav-link" data-view="calendar"><span>▦</span> Monthly Calendar</button>
+        <button class="nav-link" data-view="yearly"><span>▦</span> Yearly Calendar</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="storage-note"><span class="live-dot"></span> Saved on this device</div>
+        <button class="nav-link" id="exportBtn"><span>⇩</span> Export backup</button>
+        <button class="nav-link" id="importBtn"><span>⇧</span> Import backup</button>
+        <input type="file" id="importFile" accept="application/json,.json" hidden>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <button class="icon-btn mobile-menu" id="menuBtn" aria-label="Open menu">☰</button>
+        <div><div class="eyebrow" id="todayLabel">YOUR TIME, YOUR MOMENT</div><h1 id="pageTitle">Dashboard</h1></div>
+        <div class="top-actions">
+          <button class="icon-btn" id="themeBtn" title="Toggle theme">☼</button>
+          <button class="primary-btn" id="addEventBtn">＋ <span>Add event</span></button>
+        </div>
+      </header>
+
+      <section class="view active" id="dashboardView">
+        <div class="welcome-row">
+          <div><p class="muted">Make every moment count.</p><h2>Your upcoming moments<span class="accent">.</span></h2></div>
+          <div class="total-chip"><strong id="eventCount">0</strong><span>active events</span></div>
+        </div>
+        <div class="stats-grid">
+          <article class="stat-card"><span class="stat-icon purple">◷</span><div><small>UPCOMING</small><strong id="upcomingCount">0</strong></div></article>
+          <article class="stat-card"><span class="stat-icon blue">▦</span><div><small>THIS MONTH</small><strong id="monthCount">0</strong></div></article>
+          <article class="stat-card"><span class="stat-icon green">✓</span><div><small>COMPLETED</small><strong id="completedCount">0</strong></div></article>
+        </div>
+        <div class="section-heading"><div><h3>All events</h3><p class="muted">Your countdowns, in one place.</p></div>
+          <div class="filters"><input id="searchInput" class="search-input" placeholder="⌕  Search events..."><select id="categoryFilter"><option value="all">All categories</option><option>Exam</option><option>Personal</option><option>Birthday</option><option>Travel</option><option>Work</option><option>Other</option></select></div>
+        </div>
+        <div class="event-grid" id="eventGrid"></div>
+        <div class="empty-state" id="emptyState"><div class="empty-icon">◷</div><h3>No events yet</h3><p>Add your first event and start counting down.</p><button class="primary-btn" id="emptyAddBtn">＋ Add your first event</button></div>
+      </section>
+
+      <section class="view" id="timelineView">
+        <div class="section-heading"><div><h2>Event timeline</h2><p class="muted">See how much time has passed and how much remains.</p></div></div>
+        <div class="timeline-list" id="timelineList"></div>
+        <div class="empty-state" id="timelineEmpty"><div class="empty-icon">◉</div><h3>Your timeline is empty</h3><p>Add an event to see its progress here.</p></div>
+      </section>
+
+      <section class="view" id="calendarView">
+        <div class="section-heading calendar-heading"><div><h2>Monthly calendar</h2><p class="muted">Your events, arranged by date.</p></div>
+          <div class="calendar-controls"><button class="icon-btn" id="prevMonth">‹</button><strong id="monthTitle"></strong><button class="icon-btn" id="nextMonth">›</button><button class="subtle-btn" id="todayMonth">Today</button></div>
+        </div>
+        <div class="calendar-wrap"><div class="weekdays"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div><div class="month-grid" id="monthGrid"></div></div>
+        <div class="calendar-legend"><span><i class="dot purple-bg"></i> Event day</span><span>Click a date to add an event</span></div>
+        <div class="selected-day-panel" id="selectedDayPanel"></div>
+      </section>
+
+      <section class="view" id="yearlyView">
+        <div class="section-heading calendar-heading"><div><h2>Year at a glance</h2><p class="muted">A complete overview of your eventful year.</p></div>
+          <div class="calendar-controls"><button class="icon-btn" id="prevYear">‹</button><strong id="yearTitle"></strong><button class="icon-btn" id="nextYear">›</button></div>
+        </div>
+        <div class="year-grid" id="yearGrid"></div>
+      </section>
+
+      <footer>CHRONOS <span>•</span> Make time matter.</footer>
+    </main>
+  </div>
+
+  <dialog id="eventDialog">
+    <form id="eventForm" method="dialog">
+      <div class="modal-head"><div><div class="eyebrow">COUNTDOWN SETUP</div><h2 id="modalTitle">Create an event</h2></div><button type="button" class="icon-btn" id="closeModal">✕</button></div>
+      <input type="hidden" id="eventId">
+      <label>Event name<input id="eventName" maxlength="70" placeholder="e.g. DU Admission Exam" required></label>
+      <div class="form-row">
+        <label>Category<select id="eventCategory"><option>Exam</option><option>Personal</option><option>Birthday</option><option>Travel</option><option>Work</option><option>Other</option></select></label>
+        <label>Accent color<input id="eventColor" type="color" value="#9b8cff"></label>
+      </div>
+      <label>Countdown starts from<input id="startDate" type="datetime-local" required></label>
+      <label>Event date & time<input id="targetDate" type="datetime-local" required></label>
+      <label>Short note <span class="optional">(optional)</span><textarea id="eventNote" rows="2" maxlength="180" placeholder="Anything you want to remember..."></textarea></label>
+      <p class="form-hint">Progress is calculated between the start date and event date. Set the start date to control when the percentage begins.</p>
+      <div class="modal-actions"><button type="button" class="subtle-btn danger-text" id="deleteEventBtn" hidden>Delete</button><span class="spacer"></span><button type="button" class="subtle-btn" id="cancelModal">Cancel</button><button class="primary-btn" type="submit">Save event</button></div>
+    </form>
+  </dialog>
+  <div class="toast" id="toast"></div>
+  <script src="script.js"></script>
+</body>
+</html>
